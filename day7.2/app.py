@@ -1,6 +1,11 @@
 import numpy as np
 import re
 
+needed_space = 30000000
+total_size = 70000000
+
+dirsizes = []
+
 class Tree:
     def __init__(self):
         self.tree = {"/":
@@ -25,6 +30,8 @@ class Tree:
             if type(subtree[i]) == dict:
                 size = self.get_size_subtree(subtree[i])
                 print(i, "size =", size)
+                global dirsizes
+                dirsizes.append(size)
 
                 if size <= 100000:
                     self.total += size
@@ -37,6 +44,8 @@ class Tree:
     def print(self):
         self.total = 0
         self.print_subtree(self.tree, 0)
+        global used_space
+        used_space = self.total
         print(self.total)
 
 
@@ -94,6 +103,16 @@ for line in f.readlines():
 
 tree.print()
 
+used_space = max(dirsizes)
+print(dirsizes)
+print(total_size - used_space)
+need_to_free = needed_space - (total_size - used_space)
+
+sufficient_dirs = []
+for dirsize in dirsizes:
+    if dirsize >= need_to_free:
+        sufficient_dirs.append(dirsize)
+print(min(sufficient_dirs))
 
 
 
